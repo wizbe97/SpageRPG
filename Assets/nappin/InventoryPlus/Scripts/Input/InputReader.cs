@@ -1,11 +1,11 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 
 namespace InventoryPlus
 {
     [RequireComponent(typeof(EventSystem))]
-    [RequireComponent(typeof(StandaloneInputModule))]
     public class InputReader : MonoBehaviour
     {
         public enum ActionState { Inventory, HUD, Both };
@@ -30,7 +30,7 @@ namespace InventoryPlus
 
         [Space(15)]
         [Header("References")]
-        public PlayerController player;
+        // public PlayerController playerObject;
         public Inventory inventory;
         public UIDetails details;
 
@@ -54,8 +54,8 @@ namespace InventoryPlus
 
             //set initial state
             inputModule.horizontalAxis = InventoryOffHorizontalInput;
-            inventory.SelectFirstHotbarSlot();
-            inventory.ClearSwap();
+            // inventory.SelectFirstHotbarSlot();
+            // inventory.ClearSwap();
         }
 
         #endregion
@@ -67,7 +67,6 @@ namespace InventoryPlus
         {
             UpdateSelection();
 
-            ToggleInventory();
             InventoryActions();
         }
 
@@ -89,14 +88,15 @@ namespace InventoryPlus
         }
 
 
-        private void ToggleInventory()
+        public void ToggleInventory(InputAction.CallbackContext context)
         {
-            if (Input.GetKeyDown(KeyCode.I))
+            if (context.performed)
             {
+                Debug.Log("Inventory Toggled");
                 inventoryOn = !inventoryOn;
 
                 ShowCursor(inventoryOn);
-                player.EnableController(!inventoryOn);
+                // playerObject.EnableController(!inventoryOn);
                 inventory.ShowInventory(inventoryOn);
                 inventory.ForceEndSwap();
 
@@ -105,7 +105,7 @@ namespace InventoryPlus
                 {
                     inputModule.horizontalAxis = InventoryOnHorizontalInput;
                     inventory.SelectFirstInventorySlot();
-                    
+
                 }
                 else
                 {
@@ -113,6 +113,7 @@ namespace InventoryPlus
                     inventory.SelectFirstHotbarSlot();
                 }
             }
+
         }
 
 

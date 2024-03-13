@@ -29,26 +29,35 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnMove(InputValue value)
+    public void OnMove(InputAction.CallbackContext context)
     {
-        moveInput = value.Get<Vector2>();
-
-        if (moveInput != Vector2.zero)
+        if (context.performed)
         {
-            if (movementSpeed <= 3.01)
+            moveInput = context.ReadValue<Vector2>();
+
+            if (moveInput != Vector2.zero)
             {
-                animationState.currentState = UpdateAnimationState.PlayerStates.WALK;
-                PlayerFaceMovementDirection();
+                if (movementSpeed <= 3.01)
+                {
+                    animationState.currentState = UpdateAnimationState.PlayerStates.WALK;
+                    PlayerFaceMovementDirection();
+                }
+                else
+                {
+                    animationState.currentState = UpdateAnimationState.PlayerStates.RUN;
+                    PlayerFaceMovementDirection();
+                }
             }
             else
             {
-                animationState.currentState = UpdateAnimationState.PlayerStates.RUN;
-                PlayerFaceMovementDirection();
+                animationState.currentState = UpdateAnimationState.PlayerStates.IDLE;
             }
         }
-        else
+        if (context.canceled)
         {
             animationState.currentState = UpdateAnimationState.PlayerStates.IDLE;
+            PlayerFaceMovementDirection();
+            moveInput = Vector2.zero;
         }
     }
 
