@@ -3,12 +3,15 @@ using UnityEngine;
 
 public class Player : Character
 {
+    private InventoryManager inventoryManager;
+
     public HitPoints hitPoints;
 
     public HealthBar healthBarPrefab;
     HealthBar healthBar;
     private void Start()
     {
+        inventoryManager = FindObjectOfType<InventoryManager>();
         ResetCharacter();
     }
 
@@ -26,7 +29,7 @@ public class Player : Character
                 {
                     case Item.ItemType.COIN:
                         Debug.Log("Coin picked up!");
-                        shouldDisappear = true;
+                        shouldDisappear = inventoryManager.AddItem(hitObject);
                         break;
                     case Item.ItemType.HEALTH:
                         shouldDisappear = AdjustHitPoints(hitObject.quantity);
@@ -34,7 +37,7 @@ public class Player : Character
                         break;
                     case Item.ItemType.GUN:
                         Debug.Log("Gun picked up!");
-                        shouldDisappear = true;
+                        shouldDisappear = inventoryManager.AddItem(hitObject);
                         break;
                     default:
                         break;
